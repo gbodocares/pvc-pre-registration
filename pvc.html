@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="icon" type="image/x-icon" href="unnamed.png">
 <title>INEC PVC Registration — Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
@@ -401,17 +402,17 @@ tbody tr:hover{background:#f6fbf7}
       const file = $('#passport').files[0];
       const photoURL = await uploadPassportIfAny(file);
       const payload = {
-        fullName: $('#fullName').value.trim(),
+        fullName: $('#fullName').value.trim() ,
         dob: $('#dob').value,
         phone: phoneNG($('#phone').value),
-        email: $('#email').value.trim().toLowerCase(),
+        email: $('#email').value.trim().toLowerCase() || '',
         gender: $('#gender').value,
         occupation: $('#occupation').value.trim(),
         state: $('#state').value,
         lga: $('#lga').value,
-        ward: $('#ward').value,
+        ward: $('#ward').value || '',
         address: $('#address').value.trim(),
-        nin: $('#nin').value,
+        nin: $('#nin').value || '',
         refNo: $('#refNo').value.trim(),
         disability: $('#disability').checked,
         photoURL: photoURL || null
