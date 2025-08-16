@@ -118,7 +118,7 @@ tbody tr:hover{background:#f6fbf7}
               <div class="error" id="err-phone">Enter a valid Nigerian phone number</div>
             </div>
             <div class="field">
-              <label for="email">Email *</label>
+              <label for="email">Email</label>
               <input id="email" name="email" type="email" />
               <div class="error" id="err-email">Valid email required</div>
             </div>
@@ -146,7 +146,7 @@ tbody tr:hover{background:#f6fbf7}
               <div class="error" id="err-lga">Select an LGA</div>
             </div>
             <div class="field">
-              <label for="ward">Ward *</label>
+              <label for="ward">Ward</label>
               <select id="ward" name="ward"><option value="">Select Ward…</option></select>
               <div class="error" id="err-ward">Select a ward</div>
             </div>
@@ -160,7 +160,7 @@ tbody tr:hover{background:#f6fbf7}
           <!-- Step 2: ID -->
           <section class="step" data-step="2">
             <div class="field">
-              <label for="nin">NIN (11 digits) *</label>
+              <label for="nin">NIN (11 digits) </label>
               <input id="nin" name="nin" maxlength="11" inputmode="numeric" />
               <div class="error" id="err-nin">11-digit NIN required</div>
             </div>
@@ -345,17 +345,17 @@ tbody tr:hover{background:#f6fbf7}
       ok &= showErr('fullName', !!$('#fullName').value.trim());
       ok &= showErr('dob', isAdult($('#dob').value));
       ok &= showErr('phone', isValidPhoneNG($('#phone').value));
-      ok &= showErr('email', /.+@.+\..+/.test($('#email').value));
+      // ok &= showErr('email', /.+@.+\..+/.test($('#email').value));
       ok &= showErr('gender', !!$('#gender').value);
     }
     if(st===1){
       ok &= showErr('state', !!$('#state').value);
       ok &= showErr('lga', !!$('#lga').value);
-      ok &= showErr('ward', !!$('#ward').value);
+      // ok &= showErr('ward', !!$('#ward').value);
       ok &= showErr('address', !!$('#address').value.trim());
     }
     if(st===2){
-      ok &= showErr('nin', /^\d{11}$/.test($('#nin').value));
+      // ok &= showErr('nin', /^\d{11}$/.test($('#nin').value));
       ok &= showErr('refNo', !!$('#refNo').value.trim());
       const f = $('#passport').files[0];
       if(f){ const valid = ['image/jpeg','image/png'].includes(f.type) && f.size <= 2*1024*1024; ok &= showErr('passport', valid); }
@@ -405,14 +405,14 @@ tbody tr:hover{background:#f6fbf7}
         fullName: $('#fullName').value.trim() ,
         dob: $('#dob').value,
         phone: phoneNG($('#phone').value),
-        email: $('#email').value.trim().toLowerCase() || '',
+        email: $('#email').value.trim().toLowerCase() || '-',
         gender: $('#gender').value,
         occupation: $('#occupation').value.trim(),
         state: $('#state').value,
         lga: $('#lga').value,
-        ward: $('#ward').value || '',
+        ward: $('#ward').value || '-',
         address: $('#address').value.trim(),
-        nin: $('#nin').value || '',
+        nin: $('#nin').value || '-',
         refNo: $('#refNo').value.trim(),
         disability: $('#disability').checked,
         photoURL: photoURL || null
