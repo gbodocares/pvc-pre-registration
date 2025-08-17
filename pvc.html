@@ -41,6 +41,12 @@ h1{color:var(--green-2);text-align:center;margin-bottom:12px}
 .grid{display:grid;gap:14px}
 @media(min-width:760px){.cols-2{grid-template-columns:1fr 1fr}}
 label{display:block;font-weight:600;margin-bottom:6px}
+.label{display:inline !important; position:absolute; left: -70px; top: 3px;}
+@media(max-width:800px){.label{left: 0px; top: 3px;}}
+@media(min-width:801px) and (max-width:1200px){.label{left: -5px; top: 3px;}}
+.label2{display:inline !important; position:absolute; left: -70px; top: 3px;}
+@media(max-width:800px){.label2{left: 0px; top: 3px;}}
+@media(min-width:801px) and (max-width:1200px){.label2{left: -5px; top: 3px;}}
 input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #e6eef0;font:inherit}
 textarea{min-height:84px}
 .hint{font-size:12px;color:var(--muted)}
@@ -103,7 +109,7 @@ tbody tr:hover{background:#f6fbf7}
           <section class="step active" data-step="0">
             <div class="field">
               <label for="fullName">Full Name *</label>
-              <input id="fullName" name="fullName" />
+              <input id="fullName" name="fullName" placeholder="Surname firstname middlename"/>
               <div class="error" id="err-fullName">Full name required</div>
             </div>
             <div class="field">
@@ -174,8 +180,9 @@ tbody tr:hover{background:#f6fbf7}
               <input id="passport" name="passport" type="file" accept="image/png,image/jpeg" />
               <div class="error" id="err-passport">File must be JPG/PNG and ≤ 2MB</div>
             </div>
+            <br>
             <div class="field">
-              <label><input type="checkbox" id="disability" name="disability" /> Person with disability</label>
+              <label style="position: relative;">Person with disability <input type="checkbox" id="disability" name="disability" class="label"/></label>
             </div>
           </section>
 
@@ -184,7 +191,7 @@ tbody tr:hover{background:#f6fbf7}
             <div class="field" style="grid-column:1/-1">
               <label>Review & Consent</label>
               <p class="hint">Confirm details and consent to data processing.</p>
-              <label><input type="checkbox" id="consent" name="consent" /> I consent *</label>
+              <label style="position: relative;"><input type="checkbox" id="consent" name="consent" class="label2"/> I consent *</label>
               <div class="error" id="err-consent">Consent required</div>
             </div>
           </section>
@@ -204,12 +211,26 @@ tbody tr:hover{background:#f6fbf7}
         <div style="font-weight:700">Submitted Applications</div>
         <div class="filters" style="margin-top:8px">
           <input id="search" placeholder="Search name/state/LGA/email/phone…" />
-          <input id="startDate" type="date" />
-          <input id="endDate" type="date" />
-          <button class="btn ghost" id="clearFilters">Clear Filters</button>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-outline" id="exportCSV" disabled>Export CSV</button>
-            <button class="btn btn-outline" id="exportXLSX" disabled>Export Excel</button>
+          
+          <div style="display: flex; column-gap: 10px;">
+            <div>
+               <label for="">From</label><input id="startDate" type="date"/>
+            </div>
+
+            <div>
+              <label for="">To</label><input id="endDate" type="date" />
+            </div>
+          </div>
+          <button class="btn ghost" id="clearFilters">Clear Filters <i class="bi bi-x"></i></button>
+          <br>
+          <div style="display:flex; column-gap:8px">
+            <!-- <button class="btn btn-outline" id="exportCSV" disabled style="display: none;">Export CSV</button> -->
+            <button class="btn btn-outline" id="exportXLSX">Export Excel <i class="bi bi-file-earmark-excel"></i></button>
+            <div style="display: flex; column-gap: 10px;" >
+              <input type="password" id="passcode" placeholder="enter passcode"  style="display: none;"/>
+              <button id="confirmPasscode" style="display: none; background-color: transparent; color: #15a65b; font-size: 20px; border-radius: 8px; border: none; cursor: pointer;"><i class="bi bi-download"></i></button>
+            </div>
+            
           </div>
         </div>
       </div>
@@ -254,7 +275,7 @@ tbody tr:hover{background:#f6fbf7}
   </script>
 
   <script type="module">
-
+   
     
   /********************  CONFIGURE FIREBASE  ********************
    * Replace placeholders below with your Firebase project keys.
@@ -476,9 +497,9 @@ tbody tr:hover{background:#f6fbf7}
       <td>${rec.occupation||''}</td>
       
       
-      <td style="display: flex; column-gap: 5px;">
-        <button class="btn view" data-id="${rec.id}"><i class="bi bi-eye"></i></button>
-        <button class="btn delete" data-id="${rec.id}" style="background:#d03b3b; color: #fff;" ><i class="bi bi-trash"></i></button>
+      <td style="display: flex; column-gap: 0px;">
+        <button class="btn view" data-id="${rec.id}" style="background-color: transparent; color: #008751; font-size: 20px;" ><i class="bi bi-eye"></i></button>
+        <button class="btn delete" data-id="${rec.id}" style="background:transparent; color: red; font-size: 20px;" ><i class="bi bi-trash"></i></button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -585,14 +606,51 @@ tbody tr:hover{background:#f6fbf7}
     const csv = rows.map(r=> r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
     const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='pvc_registrations.csv'; a.click(); URL.revokeObjectURL(a.href);
   }
-  function exportXLSX(){
-    const table = document.createElement('table'); table.appendChild($('#resultsTable thead').cloneNode(true));
-    const tb = document.createElement('tbody'); getVisibleRows().forEach(tr => tb.appendChild(tr.cloneNode(true))); table.appendChild(tb);
-    const wb = XLSX.utils.table_to_book(table, {sheet:'PVC'});
-    XLSX.writeFile(wb, 'pvc_registrations.xlsx');
+
+  // function exportXLSX(){
+  //    document.getElementById('passcode').style.display = 'block';
+  //    document.getElementById('confirmPasscode').style.display = 'block';
+  // }
+
+  function confirmPasscode(){
+    let password = 'power2dyouth';
+    let passcode = document.getElementById('passcode').value;
+    if(passcode == password){
+      const table = document.createElement('table'); table.appendChild($('#resultsTable thead').cloneNode(true));
+      const tb = document.createElement('tbody'); getVisibleRows().forEach(tr => tb.appendChild(tr.cloneNode(true))); table.appendChild(tb);
+      const wb = XLSX.utils.table_to_book(table, {sheet:'PVC'});
+      XLSX.writeFile(wb, 'pvc_registrations.xlsx');
+
+      // document.getElementById('passcode').style.display = 'none';
+      // document.getElementById('confirmPasscode').style.display = 'none';
+    } else {
+      alert('Wrong passcode')
+    }
   }
-  $('#exportCSV').addEventListener('click', exportCSV);
+
+  // $('#exportCSV').addEventListener('click', exportCSV);
   $('#exportXLSX').addEventListener('click', exportXLSX);
+  $('#confirmPasscode').addEventListener('click', confirmPasscode);
+
+   const myField = document.getElementById("passcode");
+   const myFieldBtn = document.getElementById("confirmPasscode");
+    const showBtn = document.getElementById("exportXLSX");
+
+    // Show the field when button is clicked
+    showBtn.addEventListener("click", () => {
+      showBtn.style.display = "none";
+      myField.style.display = "block";
+      myFieldBtn.style.display = "block";
+    });
+
+    // Hide when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!myField.contains(e.target) && e.target !== showBtn) {
+        showBtn.style.display = "block";
+        myField.style.display = "none";
+        myFieldBtn.style.display = "none";
+      }
+    });
 
   /***************** Init clickable step dots (jumping) *****************/
   $$('.step-dot').forEach(d => d.addEventListener('click', ()=> { const t = +d.dataset.step; if (t<=current || validateStep(current)) setStep(t); }));
