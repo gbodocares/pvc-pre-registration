@@ -245,7 +245,7 @@ tbody tr:hover{background:#f6fbf7}
         <table id="resultsTable">
           <thead>
             <tr>
-              <th>Date</th><th>Photo</th><th>Full Name</th><th>State</th><th>LGA</th><th>Ward</th><th>Phone</th><th>Email</th><th>NIN</th><th>Disability</th><th>Occupation</th><th>Actions</th>
+              <th>Date</th><th>Photo</th><th>Full Name</th><th>Ref No</th><th>State</th><th>LGA</th><th>Ward</th><th>Phone</th><th>Email</th><th>NIN</th><th>Disability</th><th>Occupation</th><th>Actions</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -332,7 +332,7 @@ tbody tr:hover{background:#f6fbf7}
     'Kano':['Dala','Fagge','Gwale','Kumbotso','Tarauni']
   };
   const WARD_PRESETS = {
-    'Lagos':['ADENIRAN/OGUNSANYA','AGUDA','AKINHANMI/COLE', 'COKER', 'IGBAJA/STADIUM', 'IJESHATEDO','IKATE', 'IPONRI HOUSING ESTATE/ERIC MOORE', 'SHITTA/OGUNLANA DRIVE', 'YABA/OJUELEGBA'],
+    'Lagos':['ADENIRAN/OGUNSANYA','AGUDA','AKINHANMI/COLE', 'COKER', 'IGBAJA/STADIUM', 'IJESHATEDO','IKATE', 'IPONRI HOUSING ESTATE/ERIC MOORE', 'SHITTA/OGUNLANA DRIVE', 'YABA/OJUELEGBA', 'NOT SURULERE'],
     'Abuja':['Garki I','Wuse II','Asokoro','Maitama'],
     'Kano':['Fagge','Gwale','Kumbotso','Nassarawa']
   };
@@ -488,11 +488,14 @@ tbody tr:hover{background:#f6fbf7}
     const tbody = $('#resultsTable tbody');
     if (tbody.querySelector(`tr[data-id="${rec.id}"]`)) return;
     const tr = document.createElement('tr');
+    let count = 0;
     tr.dataset.id = rec.id;
     tr.innerHTML = `
+
       <td>${fmtDateTime(rec.createdAt)}</td>
        <td>${rec.photoURL?`<a href="${rec.photoURL}" target="_blank" rel="noopener"><img class="thumb" src="${rec.photoURL}" alt="photo"></a>`:'—'}</td>
       <td>${rec.fullName||''}</td>
+      <td>${rec.refNo||''}</td>
       <td>${rec.state||''}</td>
       <td>${rec.lga||''}</td>
       <td>${rec.ward||''}</td>
